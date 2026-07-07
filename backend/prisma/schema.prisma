@@ -1,0 +1,220 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// User & Role Management
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String
+  name      String
+  role      Role     @default(VIEWER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  maintenanceLogs Maintenance[]
+  activityLogs    ActivityLog[]
+}
+
+enum Role {
+  ADMIN
+  IT_STAFF
+  VIEWER
+}
+
+enum SystemType {
+  INTERNAL
+  EXTERNAL
+}
+
+// Organization Structure
+model Department {
+  id         Int        @id @default(autoincrement())
+  name       String     @unique
+  systemType SystemType @default(INTERNAL)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  // Relations
+  rooms           Room[]
+  employees       Employee[]
+  devices         Device[]
+  maintenanceLogs Maintenance[]
+}
+
+model Room {
+  id           Int        @id @default(autoincrement())
+  name         String
+  floor        String?
+  building     String?
+  notes        String?    @db.Text
+  systemType   SystemType @default(INTERNAL)
+  departmentId Int
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  // Relations
+  department      Department    @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  devices         Device[]
+  maintenanceLogs Maintenance[]
+}
+
+model Employee {
+  id           Int        @id @default(autoincrement())
+  name         String
+  email        String?    @unique
+  phone        String?
+  departmentId Int
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  // Relations
+  department   Department    @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  devices      Device[]
+}
+
+// Asset/Device Management
+model DeviceCategory {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique // e.g., Desktop, Printer, Router
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  devices     Device[]
+}
+
+model Device {
+  id               Int            @id @default(autoincrement())
+  assetNumber      String?        @unique
+  inventoryNumber  String?        @unique
+  serialNumber     String?        @unique
+  barcode          String?        @unique
+  qrCode           String?        @unique
+  brand            String?
+  model            String?
+  
+  // Specs (Nullable depending on device type)
+  cpu              String?
+  ram              String?
+  ssd              String?
+  hdd              String?
+  gpu              String?
+  ups              String?
+  operatingSystem  String?
+  officeVersion    String?
+  ipAddress        String?
+  macAddress       String?
+
+  purchaseDate     DateTime?
+  warrantyExpire   DateTime?
+  supplier         String?
+  status           DeviceStatus   @default(ACTIVE)
+  notes            String?        @db.Text
+  imageUrl         String?
+  systemType       SystemType     @default(INTERNAL)
+
+  // Foreign Keys
+  categoryId       Int
+  departmentId     Int?
+  roomId           Int?
+  employeeId       Int?
+
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  // Relations
+  category         DeviceCategory @relation(fields: [categoryId], references: [id])
+  department       Department?    @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  room             Room?          @relation(fields: [roomId], references: [id], onDelete: SetNull)
+  assignedTo       Employee?      @relation(fields: [employeeId], references: [id], onDelete: SetNull)
+  
+  attachments      Attachment[]
+}
+
+enum DeviceStatus {
+  ACTIVE
+  BROKEN
+  UNDER_MAINTENANCE
+  INACTIVE
+  DISPOSED
+}
+
+// Maintenance Tracking
+model Maintenance {
+  id               Int      @id @default(autoincrement())
+  visitDate        DateTime
+  
+  // Optional Notes field as requested
+  notes            String?  @db.Text
+  
+  // Document scan (PDF or Image URL)
+  documentUrl      String?
+  
+  // Foreign Keys for strict hierarchical flow
+  departmentId     Int?
+  roomId           Int?
+  // Simple string fields replacing device and employee
+  maintenanceTask  String?
+  requesterName    String?
+  deviceType       String?
+  deviceBrandModel String?
+  deviceSerialNumber String?
+  technicianId     Int
+  systemType       SystemType @default(INTERNAL)
+
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  // Relations
+  department       Department? @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  room             Room?     @relation(fields: [roomId], references: [id], onDelete: SetNull)
+  technician       User      @relation(fields: [technicianId], references: [id])
+}
+// File Attachments
+model Attachment {
+  id          Int      @id @default(autoincrement())
+  fileName    String
+  fileUrl     String
+  fileType    String   // e.g., image/png, application/pdf
+  fileSize    Int      // in bytes
+  
+  deviceId    Int
+  createdAt   DateTime @default(now())
+
+  // Relations
+  device      Device   @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+}
+
+// System Audit Logs
+model ActivityLog {
+  id          Int      @id @default(autoincrement())
+  action      String   // e.g., CREATE, UPDATE, DELETE, LOGIN
+  entity      String?  // e.g., DEVICE, USER
+  entityId    Int?
+  details     String?  @db.Text
+  ipAddress   String?
+  browser     String?
+  os          String?
+
+  userId      Int?
+  createdAt   DateTime @default(now())
+
+  // Relations
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+// System Settings
+model Setting {
+  id        String   @id @default("global") // we will only use one record with id 'global'
+  orgName   String   @default("ناوی فەرمانگە")
+  orgLogo   String?  @db.LongText // Using LongText for base64 image strings
+  updatedAt DateTime @updatedAt
+}

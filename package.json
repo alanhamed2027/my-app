@@ -1,0 +1,8 @@
+{
+  "name": "government-it-asset-management-root",
+  "private": true,
+  "scripts": {
+    "dev": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev"
+  }
+}
