@@ -12,9 +12,10 @@ export const AuthProvider = ({ children }) => {
   // Function to check if user is already logged in (when page refreshes)
   const checkAuth = async () => {
     try {
-      const response = await axios.get('/auth/profile');
-      if (response.data.success) {
-        setUser(response.data.data);
+      // Fake check auth: If there's a fake user in localStorage
+      const fakeUser = localStorage.getItem('fakeUser');
+      if (fakeUser) {
+        setUser(JSON.parse(fakeUser));
       } else {
         setUser(null);
       }
@@ -32,31 +33,21 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (username, password) => {
-    try {
-      const response = await axios.post('/auth/login', { username, password });
-      if (response.data.success) {
-        setUser(response.data.data); // Save user to state
-        return { success: true };
-      }
-      return { success: false, message: response.data.message };
-    } catch (error) {
-      const errorData = error.response?.data?.error;
-      const errorMessage = typeof errorData === 'object' && errorData !== null ? errorData.message : errorData;
-      return {
-        success: false,
-        message: errorMessage || 'Login failed. Please try again.',
-      };
-    }
+    // Fake login
+    const fakeUserData = {
+      id: 1,
+      username: username || 'admin',
+      fullName: 'Admin (Demo Mode)',
+      role: 'ADMIN'
+    };
+    setUser(fakeUserData);
+    localStorage.setItem('fakeUser', JSON.stringify(fakeUserData));
+    return { success: true };
   };
 
   const logout = async () => {
-    try {
-      await axios.post('/auth/logout');
-    } catch (error) {
-      console.error('Logout error', error);
-    } finally {
-      setUser(null);
-    }
+    localStorage.removeItem('fakeUser');
+    setUser(null);
   };
 
   return (
