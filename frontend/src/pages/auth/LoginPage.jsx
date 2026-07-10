@@ -73,7 +73,7 @@ const LoginPage = () => {
                 <input 
                   type="text" 
                   placeholder="ناوی بەکارهێنەر (Username)" 
-                  className="w-full px-4 py-3 border border-slate-300 rounded focus:outline-none focus:border-slate-800 focus:ring-1 focus:ring-slate-800 transition-colors text-left" 
+                  className="w-full px-4 py-3 border border-slate-300 rounded focus:outline-none focus:border-slate-800 focus:ring-1 focus:ring-slate-800 transition-colors text-left text-slate-900 bg-white" 
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   dir="ltr"
@@ -85,7 +85,7 @@ const LoginPage = () => {
                 <input 
                   type="password" 
                   placeholder="وشەی نهێنی (Password)" 
-                  className="w-full px-4 py-3 border border-slate-300 rounded focus:outline-none focus:border-slate-800 focus:ring-1 focus:ring-slate-800 transition-colors text-left"
+                  className="w-full px-4 py-3 border border-slate-300 rounded focus:outline-none focus:border-slate-800 focus:ring-1 focus:ring-slate-800 transition-colors text-left text-slate-900 bg-white"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   dir="ltr"
@@ -106,6 +106,13 @@ const LoginPage = () => {
                 </button>
               </div>
             </form>
+          </div>
+          
+          {/* Developer Credit */}
+          <div className="mt-12 text-center" dir="ltr">
+            <p className="text-xs text-slate-400 font-medium tracking-wide">
+              Developed & Designed by <span className="font-bold text-slate-500">Alan Hamed</span>
+            </p>
           </div>
         </div>
       </div>

@@ -407,13 +407,15 @@ const MaintenancePage = () => {
                         >
                           <Edit size={16} />
                         </button>
-                        <button 
-                          onClick={() => handleDelete(log.id)}
-                          className="p-2 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-900/30 dark:text-red-400 transition-colors"
-                          title="سڕینەوە"
-                        >
-                          <Trash2 size={16} />
-                        </button>
+                        {user?.role?.toUpperCase() === 'ADMIN' && (
+                          <button 
+                            onClick={() => handleDelete(log.id)}
+                            className="p-2 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-900/30 dark:text-red-400 transition-colors"
+                            title="سڕینەوە"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>

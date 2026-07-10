@@ -32,7 +32,11 @@ axiosInstance.interceptors.response.use(
     }
     
     if (error.response && error.response.status === 401) {
-      // Handle 401 Unauthorized globally if needed
+      // Handle 401 Unauthorized globally: Force redirect to login
+      // Ignore if the user is already on the login page or checking auth
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(error);
   }

@@ -1,10 +1,12 @@
 import { useAuth } from '../../context/AuthContext';
 import { useSystem } from '../../context/SystemContext';
-import { LogOut, Menu } from 'lucide-react';
+import { useTheme } from '../../context/ThemeContext';
+import { LogOut, Menu, Sun, Moon } from 'lucide-react';
 
 const TopNavbar = ({ toggleSidebar }) => {
   const { logout } = useAuth();
   const { systemType } = useSystem();
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <header className="fixed top-0 z-30 flex h-20 w-full lg:w-[calc(100%-16rem)] items-center justify-between border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/60 px-6 backdrop-blur-xl transition-all duration-300">
@@ -39,7 +41,14 @@ const TopNavbar = ({ toggleSidebar }) => {
       </div>
 
       <div className="flex items-center gap-4">
-        {/* Notifications removed as per user request */}
+        {/* Dark Mode Toggle */}
+        <button
+          onClick={toggleTheme}
+          className="rounded-full p-2 text-slate-600 hover:bg-slate-200 dark:text-slate-300 dark:hover:bg-slate-800 transition-colors"
+          title={theme === 'dark' ? 'گەڕانەوە بۆ دۆخی ڕووناک' : 'گۆڕین بۆ دۆخی تاریک'}
+        >
+          {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+        </button>
 
         <div className="h-8 w-px bg-slate-200 dark:bg-slate-700 mx-2 hidden sm:block"></div>
 

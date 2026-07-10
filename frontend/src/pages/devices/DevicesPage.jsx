@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useSystem } from '../../context/SystemContext';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
-import { Plus, Search, Trash2, Edit, Printer, Cpu, Building2, DoorOpen, ChevronRight, ArrowUpDown, ChevronUp, ChevronDown, Monitor, Zap, AlertTriangle, Info, Scan, MapPin } from 'lucide-react';
+import { Plus, Search, Trash2, Edit, Printer, Cpu, Building2, DoorOpen, ChevronRight, ArrowUpDown, ChevronUp, ChevronDown, Monitor, Zap, AlertTriangle, Info, Scan, MapPin, ArrowRightLeft } from 'lucide-react';
 import { clsx } from 'clsx';
 import { motion, AnimatePresence } from 'framer-motion';
 import EditDeviceModal from '../../components/devices/EditDeviceModal';
@@ -13,6 +13,7 @@ import PrintDeviceModal from '../../components/devices/PrintDeviceModal';
 import PrintRoomModal from '../../components/devices/PrintRoomModal';
 import CustomCategoryDropdown from '../../components/devices/CustomCategoryDropdown';
 import CustomSpecDropdown from '../../components/devices/CustomSpecDropdown';
+import DeviceSummaryModal from '../../components/devices/DeviceSummaryModal';
 
 const CopierIcon = ({ size = 24, className = "" }) => (
   <svg 
@@ -84,6 +85,9 @@ const DevicesPage = () => {
   
   // Sorting State
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+
+  // Summary Modal State
+  const [summaryModalState, setSummaryModalState] = useState({ isOpen: false, title: '', devices: [] });
 
   // Fetch Departments
   const fetchDepartments = async () => {
@@ -342,10 +346,10 @@ const DevicesPage = () => {
 
   // Helper to render Intelligent Room Analytics (Step 3)
   const renderRoomAnalytics = () => {
-    let computerCount = 0;
-    let printerCount = 0;
-    let copierCount = 0;
-    let scannerCount = 0;
+    const computers = [];
+    const printers = [];
+    const copiers = [];
+    const scanners = [];
 
     sortedDevices.forEach(device => {
       const cat = (device.category?.name || '').toLowerCase();
@@ -355,22 +359,47 @@ const DevicesPage = () => {
       const isScanner = ['scanner', 'سکانەر'].some(kw => cat.includes(kw));
       
       if (isComputer) {
-        computerCount++;
+        computers.push(device);
       } else if (isPrinter) {
-        printerCount++;
+        printers.push(device);
       } else if (isCopier) {
-        copierCount++;
+        copiers.push(device);
       } else if (isScanner) {
-        scannerCount++;
+        scanners.push(device);
       }
     });
 
-    if (computerCount === 0 && printerCount === 0 && copierCount === 0 && scannerCount === 0) return null;
+    if (computers.length === 0 && printers.length === 0 && copiers.length === 0 && scanners.length === 0) return null;
+
+    const openSummaryModal = (title, devices) => {
+      setSummaryModalState({ isOpen: true, title, devices });
+    };
 
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6 mb-2">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mt-6 mb-2">
+        {/* Total Summary */}
+        <button 
+          onClick={() => openSummaryModal('کۆی گشتی ئامێرەکان', sortedDevices)}
+          className="text-right group relative overflow-hidden rounded-2xl bg-white dark:bg-slate-800 p-4 shadow-sm border border-slate-200 dark:border-slate-700 transition-all duration-300 hover:shadow-md hover:-translate-y-1 border-r-4 border-r-orange-500 cursor-pointer"
+        >
+          <div className="relative z-10 flex flex-row items-center justify-between mb-3">
+            <h3 className="text-sm font-bold text-slate-600 dark:text-slate-300 tracking-wide">کۆی گشتی ئامێرەکان</h3>
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl transition-transform duration-500 group-hover:scale-110 bg-orange-100 dark:bg-orange-900/40 text-orange-600 dark:text-orange-400">
+              <Monitor size={20} />
+            </div>
+          </div>
+          <div className="relative z-10">
+            <div className="text-3xl font-black text-slate-800 dark:text-white tracking-tight">
+              {Number(sortedDevices?.length || 0).toLocaleString()}
+            </div>
+          </div>
+        </button>
+
         {/* Total Computers */}
-        <div className="group relative overflow-hidden rounded-2xl bg-white dark:bg-slate-800 p-4 shadow-sm border border-slate-200 dark:border-slate-700 transition-all duration-300 hover:shadow-md hover:-translate-y-1 border-r-4 border-r-blue-500">
+        <button 
+          onClick={() => openSummaryModal('کۆمپیوتەر / لاپتۆپ', computers)}
+          className="text-right group relative overflow-hidden rounded-2xl bg-white dark:bg-slate-800 p-4 shadow-sm border border-slate-200 dark:border-slate-700 transition-all duration-300 hover:shadow-md hover:-translate-y-1 border-r-4 border-r-blue-500 cursor-pointer"
+        >
           <div className="relative z-10 flex flex-row items-center justify-between mb-3">
             <h3 className="text-sm font-bold text-slate-600 dark:text-slate-300 tracking-wide">کۆمپیوتەر / لاپتۆپ</h3>
             <div className="flex h-10 w-10 items-center justify-center rounded-xl transition-transform duration-500 group-hover:scale-110 bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400">
@@ -379,13 +408,16 @@ const DevicesPage = () => {
           </div>
           <div className="relative z-10">
             <div className="text-3xl font-black text-slate-800 dark:text-white tracking-tight">
-              {Number(computerCount || 0).toLocaleString()}
+              {Number(computers.length || 0).toLocaleString()}
             </div>
           </div>
-        </div>
+        </button>
 
         {/* Printers */}
-        <div className="group relative overflow-hidden rounded-2xl bg-white dark:bg-slate-800 p-4 shadow-sm border border-slate-200 dark:border-slate-700 transition-all duration-300 hover:shadow-md hover:-translate-y-1 border-r-4 border-r-primary-500">
+        <button 
+          onClick={() => openSummaryModal('پرینتەر (چاپکەر)', printers)}
+          className="text-right group relative overflow-hidden rounded-2xl bg-white dark:bg-slate-800 p-4 shadow-sm border border-slate-200 dark:border-slate-700 transition-all duration-300 hover:shadow-md hover:-translate-y-1 border-r-4 border-r-primary-500 cursor-pointer"
+        >
           <div className="relative z-10 flex flex-row items-center justify-between mb-3">
             <h3 className="text-sm font-bold text-slate-600 dark:text-slate-300 tracking-wide">پرینتەر (چاپکەر)</h3>
             <div className="flex h-10 w-10 items-center justify-center rounded-xl transition-transform duration-500 group-hover:scale-110 bg-primary-100 dark:bg-primary-900/40 text-primary-600 dark:text-primary-400">
@@ -394,13 +426,16 @@ const DevicesPage = () => {
           </div>
           <div className="relative z-10">
             <div className="text-3xl font-black text-slate-800 dark:text-white tracking-tight">
-              {Number(printerCount || 0).toLocaleString()}
+              {Number(printers.length || 0).toLocaleString()}
             </div>
           </div>
-        </div>
+        </button>
 
         {/* Copiers */}
-        <div className="group relative overflow-hidden rounded-2xl bg-white dark:bg-slate-800 p-4 shadow-sm border border-slate-200 dark:border-slate-700 transition-all duration-300 hover:shadow-md hover:-translate-y-1 border-r-4 border-r-emerald-500">
+        <button 
+          onClick={() => openSummaryModal('ئیستنساخ', copiers)}
+          className="text-right group relative overflow-hidden rounded-2xl bg-white dark:bg-slate-800 p-4 shadow-sm border border-slate-200 dark:border-slate-700 transition-all duration-300 hover:shadow-md hover:-translate-y-1 border-r-4 border-r-emerald-500 cursor-pointer"
+        >
           <div className="relative z-10 flex flex-row items-center justify-between mb-3">
             <h3 className="text-sm font-bold text-slate-600 dark:text-slate-300 tracking-wide">ئیستنساخ</h3>
             <div className="flex h-10 w-10 items-center justify-center rounded-xl transition-transform duration-500 group-hover:scale-110 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400">
@@ -409,13 +444,16 @@ const DevicesPage = () => {
           </div>
           <div className="relative z-10">
             <div className="text-3xl font-black text-slate-800 dark:text-white tracking-tight">
-              {Number(copierCount || 0).toLocaleString()}
+              {Number(copiers.length || 0).toLocaleString()}
             </div>
           </div>
-        </div>
+        </button>
 
         {/* Scanners */}
-        <div className="group relative overflow-hidden rounded-2xl bg-white dark:bg-slate-800 p-4 shadow-sm border border-slate-200 dark:border-slate-700 transition-all duration-300 hover:shadow-md hover:-translate-y-1 border-r-4 border-r-rose-500">
+        <button 
+          onClick={() => openSummaryModal('سکانەر', scanners)}
+          className="text-right group relative overflow-hidden rounded-2xl bg-white dark:bg-slate-800 p-4 shadow-sm border border-slate-200 dark:border-slate-700 transition-all duration-300 hover:shadow-md hover:-translate-y-1 border-r-4 border-r-rose-500 cursor-pointer"
+        >
           <div className="relative z-10 flex flex-row items-center justify-between mb-3">
             <h3 className="text-sm font-bold text-slate-600 dark:text-slate-300 tracking-wide">سکانەر</h3>
             <div className="flex h-10 w-10 items-center justify-center rounded-xl transition-transform duration-500 group-hover:scale-110 bg-rose-100 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400">
@@ -424,10 +462,10 @@ const DevicesPage = () => {
           </div>
           <div className="relative z-10">
             <div className="text-3xl font-black text-slate-800 dark:text-white tracking-tight">
-              {Number(scannerCount || 0).toLocaleString()}
+              {Number(scanners.length || 0).toLocaleString()}
             </div>
           </div>
-        </div>
+        </button>
       </div>
     );
   };
@@ -517,10 +555,10 @@ const DevicesPage = () => {
 
   // Helper to render Summary Dashboard
   const renderSummaryCards = (deviceList) => {
-    let computerCount = 0;
-    let printerCount = 0;
-    let copierCount = 0;
-    let scannerCount = 0;
+    const computers = [];
+    const printers = [];
+    const copiers = [];
+    const scanners = [];
 
     deviceList.forEach(device => {
       const catName = (device.category?.name || '').toLowerCase();
@@ -531,20 +569,45 @@ const DevicesPage = () => {
       const isScanner = ['scanner', 'سکانەر'].some(kw => catName.includes(kw));
 
       if (isComputer) {
-        computerCount++;
+        computers.push(device);
       } else if (isPrinter) {
-        printerCount++;
+        printers.push(device);
       } else if (isCopier) {
-        copierCount++;
+        copiers.push(device);
       } else if (isScanner) {
-        scannerCount++;
+        scanners.push(device);
       }
     });
 
+    const openSummaryModal = (title, devices) => {
+      setSummaryModalState({ isOpen: true, title, devices });
+    };
+
     return (
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        {/* Total Summary */}
+        <button 
+          onClick={() => openSummaryModal('کۆی گشتی ئامێرەکان', deviceList)}
+          className="text-right group relative overflow-hidden rounded-2xl bg-white dark:bg-slate-800 p-4 shadow-sm border border-slate-200 dark:border-slate-700 transition-all duration-300 hover:shadow-md hover:-translate-y-1 border-r-4 border-r-orange-500 cursor-pointer"
+        >
+          <div className="relative z-10 flex flex-row items-center justify-between mb-3">
+            <h3 className="text-sm font-bold text-slate-600 dark:text-slate-300 tracking-wide">کۆی گشتی ئامێرەکان</h3>
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl transition-transform duration-500 group-hover:scale-110 bg-orange-100 dark:bg-orange-900/40 text-orange-600 dark:text-orange-400">
+              <Monitor size={20} />
+            </div>
+          </div>
+          <div className="relative z-10">
+            <div className="text-3xl font-black text-slate-800 dark:text-white tracking-tight">
+              {Number(deviceList?.length || 0).toLocaleString()}
+            </div>
+          </div>
+        </button>
+
         {/* Computers Summary */}
-        <div className="group relative overflow-hidden rounded-2xl bg-white dark:bg-slate-800 p-4 shadow-sm border border-slate-200 dark:border-slate-700 transition-all duration-300 hover:shadow-md hover:-translate-y-1 border-r-4 border-r-blue-500">
+        <button 
+          onClick={() => openSummaryModal('کۆمپیوتەر / لاپتۆپ', computers)}
+          className="text-right group relative overflow-hidden rounded-2xl bg-white dark:bg-slate-800 p-4 shadow-sm border border-slate-200 dark:border-slate-700 transition-all duration-300 hover:shadow-md hover:-translate-y-1 border-r-4 border-r-blue-500 cursor-pointer"
+        >
           <div className="relative z-10 flex flex-row items-center justify-between mb-3">
             <h3 className="text-sm font-bold text-slate-600 dark:text-slate-300 tracking-wide">کۆمپیوتەر / لاپتۆپ</h3>
             <div className="flex h-10 w-10 items-center justify-center rounded-xl transition-transform duration-500 group-hover:scale-110 bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400">
@@ -553,13 +616,16 @@ const DevicesPage = () => {
           </div>
           <div className="relative z-10">
             <div className="text-3xl font-black text-slate-800 dark:text-white tracking-tight">
-              {Number(computerCount || 0).toLocaleString()}
+              {Number(computers.length || 0).toLocaleString()}
             </div>
           </div>
-        </div>
+        </button>
 
         {/* Printers Summary */}
-        <div className="group relative overflow-hidden rounded-2xl bg-white dark:bg-slate-800 p-4 shadow-sm border border-slate-200 dark:border-slate-700 transition-all duration-300 hover:shadow-md hover:-translate-y-1 border-r-4 border-r-primary-500">
+        <button 
+          onClick={() => openSummaryModal('پرینتەر (چاپکەر)', printers)}
+          className="text-right group relative overflow-hidden rounded-2xl bg-white dark:bg-slate-800 p-4 shadow-sm border border-slate-200 dark:border-slate-700 transition-all duration-300 hover:shadow-md hover:-translate-y-1 border-r-4 border-r-primary-500 cursor-pointer"
+        >
           <div className="relative z-10 flex flex-row items-center justify-between mb-3">
             <h3 className="text-sm font-bold text-slate-600 dark:text-slate-300 tracking-wide">پرینتەر (چاپکەر)</h3>
             <div className="flex h-10 w-10 items-center justify-center rounded-xl transition-transform duration-500 group-hover:scale-110 bg-primary-100 dark:bg-primary-900/40 text-primary-600 dark:text-primary-400">
@@ -568,13 +634,16 @@ const DevicesPage = () => {
           </div>
           <div className="relative z-10">
             <div className="text-3xl font-black text-slate-800 dark:text-white tracking-tight">
-              {Number(printerCount || 0).toLocaleString()}
+              {Number(printers.length || 0).toLocaleString()}
             </div>
           </div>
-        </div>
+        </button>
 
         {/* Copiers Summary */}
-        <div className="group relative overflow-hidden rounded-2xl bg-white dark:bg-slate-800 p-4 shadow-sm border border-slate-200 dark:border-slate-700 transition-all duration-300 hover:shadow-md hover:-translate-y-1 border-r-4 border-r-emerald-500">
+        <button 
+          onClick={() => openSummaryModal('ئیستنساخ', copiers)}
+          className="text-right group relative overflow-hidden rounded-2xl bg-white dark:bg-slate-800 p-4 shadow-sm border border-slate-200 dark:border-slate-700 transition-all duration-300 hover:shadow-md hover:-translate-y-1 border-r-4 border-r-emerald-500 cursor-pointer"
+        >
           <div className="relative z-10 flex flex-row items-center justify-between mb-3">
             <h3 className="text-sm font-bold text-slate-600 dark:text-slate-300 tracking-wide">ئیستنساخ</h3>
             <div className="flex h-10 w-10 items-center justify-center rounded-xl transition-transform duration-500 group-hover:scale-110 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400">
@@ -583,13 +652,16 @@ const DevicesPage = () => {
           </div>
           <div className="relative z-10">
             <div className="text-3xl font-black text-slate-800 dark:text-white tracking-tight">
-              {Number(copierCount || 0).toLocaleString()}
+              {Number(copiers.length || 0).toLocaleString()}
             </div>
           </div>
-        </div>
+        </button>
 
         {/* Scanners Summary */}
-        <div className="group relative overflow-hidden rounded-2xl bg-white dark:bg-slate-800 p-4 shadow-sm border border-slate-200 dark:border-slate-700 transition-all duration-300 hover:shadow-md hover:-translate-y-1 border-r-4 border-r-rose-500">
+        <button 
+          onClick={() => openSummaryModal('سکانەر', scanners)}
+          className="text-right group relative overflow-hidden rounded-2xl bg-white dark:bg-slate-800 p-4 shadow-sm border border-slate-200 dark:border-slate-700 transition-all duration-300 hover:shadow-md hover:-translate-y-1 border-r-4 border-r-rose-500 cursor-pointer"
+        >
           <div className="relative z-10 flex flex-row items-center justify-between mb-3">
             <h3 className="text-sm font-bold text-slate-600 dark:text-slate-300 tracking-wide">سکانەر</h3>
             <div className="flex h-10 w-10 items-center justify-center rounded-xl transition-transform duration-500 group-hover:scale-110 bg-rose-100 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400">
@@ -598,10 +670,10 @@ const DevicesPage = () => {
           </div>
           <div className="relative z-10">
             <div className="text-3xl font-black text-slate-800 dark:text-white tracking-tight">
-              {Number(scannerCount || 0).toLocaleString()}
+              {Number(scanners.length || 0).toLocaleString()}
             </div>
           </div>
-        </div>
+        </button>
       </div>
     );
   };
@@ -717,13 +789,13 @@ const DevicesPage = () => {
             {/* Instruction Banner for Step 2 removed to save space */}
 
             {/* Department Summary Cards wrapped in an Alert Container */}
-            <div className="bg-blue-50/30 dark:bg-blue-900/10 rounded-2xl p-5 border-2 border-blue-100 dark:border-blue-800/30">
+            <div className="bg-orange-50/60 dark:bg-orange-900/10 rounded-2xl p-5 border border-orange-200/60 dark:border-orange-800/30">
               <div className="flex items-center gap-3 mb-4">
-                <div className="bg-blue-100 dark:bg-blue-800 p-2 rounded-xl text-blue-600 dark:text-blue-300">
+                <div className="bg-orange-100/80 dark:bg-orange-800/50 p-2 rounded-xl text-orange-600 dark:text-orange-400">
                   <Info size={20} />
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-blue-900 dark:text-blue-100">
+                  <h4 className="text-sm font-bold text-orange-900 dark:text-orange-100">
                     {systemType === 'EXTERNAL'
                       ? `ئەم ئامارانەی خوارەوە کۆی گشتی سەرجەم ئامێرە تۆمارکراوەکانی ${selectedDepartment?.name}یە`
                       : `ئەم ئامارانەی خوارەوە کۆی گشتی سەرجەم ئامێرە تۆمارکراوەکانی بەشی ${selectedDepartment?.name}یە`
@@ -803,14 +875,6 @@ const DevicesPage = () => {
                   <p className="text-sm text-slate-500 dark:text-slate-400 font-medium mt-1">سەرجەم ئامێرە تۆمارکراوەکانی ئەم ژوورە</p>
                 </div>
                 </div>
-                <Button 
-                  variant="outline" 
-                  className="gap-2 border-primary-200 text-primary-600 hover:bg-primary-50 dark:border-primary-800 dark:text-primary-400 dark:hover:bg-primary-900/30"
-                  onClick={() => setIsPrintRoomModalOpen(true)}
-                >
-                  <Printer size={18} />
-                  چاپکردنی لیستی ژوور
-                </Button>
               </div>
             ) : showGlobalSearch ? (
               <div className="flex items-center gap-3 bg-slate-50 dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
@@ -828,13 +892,13 @@ const DevicesPage = () => {
 
             {/* Render Analytics above table */}
             {!showGlobalSearch && selectedRoom && (
-              <div className="bg-blue-50/30 dark:bg-blue-900/10 rounded-2xl p-5 border-2 border-blue-100 dark:border-blue-800/30">
+              <div className="bg-orange-50/60 dark:bg-orange-900/10 rounded-2xl p-5 border border-orange-200/60 dark:border-orange-800/30">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="bg-blue-100 dark:bg-blue-800 p-2 rounded-xl text-blue-600 dark:text-blue-300">
+                  <div className="bg-orange-100/80 dark:bg-orange-800/50 p-2 rounded-xl text-orange-600 dark:text-orange-400">
                     <Info size={20} />
                   </div>
                   <div>
-                    <h4 className="text-sm font-bold text-blue-900 dark:text-blue-100">
+                    <h4 className="text-sm font-bold text-orange-900 dark:text-orange-100">
                       ئەم ئامارانەی خوارەوە کۆی گشتی سەرجەم ئامێرە تۆمارکراوەکانی ژووری {selectedRoom?.name}یە
                     </h4>
                   </div>
@@ -967,14 +1031,16 @@ const DevicesPage = () => {
                             {(['ADMIN', 'IT_STAFF'].includes(user?.role?.toUpperCase())) && (
                               <>
                                 <Button variant="ghost" size="icon" title="گواستنەوە" className="h-8 w-8 text-slate-500 dark:text-slate-400 hover:text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-900/30 rounded-lg" onClick={() => setDeviceToTransfer(device)}>
-                                  <MapPin size={16} />
+                                  <ArrowRightLeft size={16} />
                                 </Button>
                                 <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-500 dark:text-slate-400 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/30 rounded-lg" onClick={() => handleEdit(device)}>
                                   <Edit size={16} />
                                 </Button>
-                                <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-500 dark:text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg" onClick={() => handleDelete(device.id)}>
-                                  <Trash2 size={16} />
-                                </Button>
+                                {user?.role?.toUpperCase() === 'ADMIN' && (
+                                  <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-500 dark:text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg" onClick={() => handleDelete(device.id)}>
+                                    <Trash2 size={16} />
+                                  </Button>
+                                )}
                               </>
                             )}
                           </div>
@@ -1195,6 +1261,17 @@ const DevicesPage = () => {
         room={selectedRoom}
         department={selectedDepartment}
         devices={sortedDevices}
+      />
+
+      {/* Device Summary Modal */}
+      <DeviceSummaryModal
+        isOpen={summaryModalState.isOpen}
+        onClose={() => setSummaryModalState({ ...summaryModalState, isOpen: false })}
+        title={summaryModalState.title}
+        devices={summaryModalState.devices}
+        department={selectedDepartment}
+        room={selectedRoom}
+        systemType={systemType}
       />
     </div>
   );

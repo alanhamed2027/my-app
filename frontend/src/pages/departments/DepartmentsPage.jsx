@@ -130,12 +130,14 @@ const DepartmentsPage = () => {
                     >
                       <Edit size={14} />
                     </button>
-                    <button 
-                      onClick={() => handleDelete(dept.id, dept.name)}
-                      className="h-7 w-7 flex items-center justify-center rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors"
-                    >
-                      <Trash2 size={14} />
-                    </button>
+                    {user?.role?.toUpperCase() === 'ADMIN' && (
+                      <button 
+                        onClick={() => handleDelete(dept.id, dept.name)}
+                        className="h-7 w-7 flex items-center justify-center rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    )}
                   </div>
                 )}
               </div>

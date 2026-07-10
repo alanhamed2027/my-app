@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
   --color-background: hsl(var(--background));
@@ -175,21 +176,21 @@
   }
 
   /* Force clean official table design when printing */
-  table {
+  table:not(.print-beautiful) {
     width: 100% !important;
     border-collapse: collapse !important;
     font-size: 11px !important;
     color: #0f172a !important;
   }
   
-  th, td {
+  table:not(.print-beautiful) th, table:not(.print-beautiful) td {
     border: 1px solid #cbd5e1 !important;
     padding: 8px 10px !important;
     text-align: right !important;
     vertical-align: top !important;
   }
 
-  th {
+  table:not(.print-beautiful) th {
     background-color: #f8fafc !important;
     font-weight: bold !important;
     border-bottom: 2px solid #94a3b8 !important;
@@ -198,9 +199,27 @@
     print-color-adjust: exact !important;
   }
 
-  tr:nth-child(even) td {
+  table:not(.print-beautiful) tr:nth-child(even) td {
     background-color: #fbfcfd !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
+
+  /* Print Isolation: Hides the main app when a printable portal modal is open */
+  body:has(.print-isolate) #root {
+    display: none !important;
+  }
+  
+  body:has(.print-isolate) .print-isolate {
+    display: block !important;
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    min-height: 100vh !important;
+    background: transparent !important;
+    z-index: 99999 !important;
+  }
 }
+
+

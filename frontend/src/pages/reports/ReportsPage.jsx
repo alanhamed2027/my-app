@@ -4,10 +4,12 @@ import { useAuth } from '../../context/AuthContext';
 import Button from '../../components/ui/Button';
 import { Printer, Filter, Monitor, Wrench, Search } from 'lucide-react';
 import { useSettings } from '../../context/SettingsContext';
+import { useSystem } from '../../context/SystemContext';
 
 const ReportsPage = () => {
   const { user } = useAuth();
   const { settings } = useSettings();
+  const { systemType } = useSystem();
   
   // Tabs: 'devices' | 'maintenance'
   const [activeTab, setActiveTab] = useState('devices');
@@ -183,14 +185,16 @@ const ReportsPage = () => {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">بەش</label>
+                  <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">
+                    {systemType === 'EXTERNAL' ? 'ناوی شارەوانی' : 'بەش'}
+                  </label>
                   <select 
                     name="departmentId" 
                     value={deviceFilters.departmentId} 
                     onChange={handleDeviceFilterChange}
                     className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
                   >
-                    <option value="">هەموو بەشەکان</option>
+                    <option value="">{systemType === 'EXTERNAL' ? 'هەموو شارەوانییەکان' : 'هەموو بەشەکان'}</option>
                     {departments.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
                   </select>
                 </div>
@@ -280,8 +284,10 @@ const ReportsPage = () => {
                       <tr>
                         <th className="py-4 px-6">کۆدی ئامێر (S/N)</th>
                         <th className="py-4 px-6">جۆر</th>
-                        <th className="py-4 px-6">براند / مۆدێل</th>
-                        <th className="py-4 px-6">بەش</th>
+                        <th className="py-4 px-6">براند</th>
+                        <th className="py-4 px-6">پرۆسێسەر</th>
+                        <th className="py-4 px-6">هارد</th>
+                        <th className="py-4 px-6">{systemType === 'EXTERNAL' ? 'ناوی شارەوانی' : 'بەش'}</th>
                         <th className="py-4 px-6">ژوور</th>
                       </tr>
                     </thead>
@@ -290,7 +296,9 @@ const ReportsPage = () => {
                         <tr key={device.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/30 text-slate-700 dark:text-slate-300 print:text-black">
                           <td className="py-3 px-6 font-bold" dir="ltr">{device.serialNumber || '-'}</td>
                           <td className="py-3 px-6">{device.category?.name || '-'}</td>
-                          <td className="py-3 px-6">{device.brand} / {device.model}</td>
+                          <td className="py-3 px-6">{device.brand || '-'}</td>
+                          <td className="py-3 px-6" dir="ltr">{device.cpu || '-'}</td>
+                          <td className="py-3 px-6" dir="ltr">{device.hdd || device.ssd || '-'}</td>
                           <td className="py-3 px-6">{device.department?.name || '-'}</td>
                           <td className="py-3 px-6">{device.room?.name || '-'}</td>
                         </tr>
@@ -405,7 +413,7 @@ const ReportsPage = () => {
                         maintenanceReports.logs.map(log => (
                           <tr key={log.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/30 text-slate-700 dark:text-slate-300 print:text-black">
                             <td className="py-3 px-6 font-medium">
-                              {log.department ? <div>بەش: {log.department.name}</div> : '-'}
+                              {log.department ? <div>{systemType === 'EXTERNAL' ? 'شارەوانی' : 'بەش'}: {log.department.name}</div> : '-'}
                               {log.room && <div>ژوور: {log.room.name}</div>}
                             </td>
                             <td className="py-3 px-6">{log.requesterName || '-'}</td>

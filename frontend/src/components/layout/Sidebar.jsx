@@ -46,13 +46,13 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         isOpen ? "translate-x-0" : "translate-x-full"
       )}
     >
-      <div className="flex h-20 shrink-0 items-center justify-between border-b border-slate-200 dark:border-slate-700 px-6">
-        <div className="flex w-full items-center justify-center py-2">
-          <div className="flex flex-col items-center justify-center bg-slate-100 dark:bg-slate-800/60 px-6 py-2 rounded-2xl border border-slate-200 dark:border-slate-700/50 shadow-inner">
-            <span className="text-2xl font-black text-slate-800 dark:text-slate-100 drop-shadow-sm" style={{ letterSpacing: '0.1em' }}>
+      <div className="flex h-20 shrink-0 items-center justify-between border-b border-slate-200 dark:border-slate-700 px-4">
+        <div className="flex flex-1 items-center justify-center py-2">
+          <div className="flex flex-col items-center justify-center bg-slate-100 dark:bg-slate-800/60 px-4 sm:px-6 py-2 rounded-2xl border border-slate-200 dark:border-slate-700/50 shadow-inner">
+            <span className="text-xl sm:text-2xl font-black text-slate-800 dark:text-slate-100 drop-shadow-sm" style={{ letterSpacing: '0.1em' }}>
               {time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
             </span>
-            <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mt-0.5">
+            <span className="text-[9px] sm:text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mt-0.5">
               {time.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}
             </span>
           </div>

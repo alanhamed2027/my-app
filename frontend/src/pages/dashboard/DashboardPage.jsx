@@ -135,14 +135,18 @@ const DashboardPage = () => {
 
   return (
     <div className="flex flex-col gap-8 pb-10">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-50 dark:bg-slate-900/50 p-6 rounded-3xl border border-white/20 dark:border-slate-800 backdrop-blur-xl shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-orange-50/60 dark:bg-orange-900/10 p-6 rounded-3xl border border-orange-200/60 dark:border-orange-800/30 backdrop-blur-xl shadow-sm">
         <div>
-          <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white leading-tight">
+          <h2 className="text-xl sm:text-2xl font-black text-orange-900 dark:text-orange-100 leading-tight">
             {systemType === 'EXTERNAL' ? 'داشبۆردی شارەوانییەکان' : 'پوختەى ئامارەکانى ئامێرى ئەلکترۆنى'}
           </h2>
-          {systemType === 'EXTERNAL' && (
-            <p className="mt-2 text-slate-500 dark:text-slate-400 font-medium">
+          {systemType === 'EXTERNAL' ? (
+            <p className="mt-2 text-orange-700/80 dark:text-orange-300/80 font-medium">
               پوختەى ئامارەکانى ئامێرى ئەلکترۆنى سەرجەم شارەوانییەکان
+            </p>
+          ) : (
+            <p className="mt-2 text-orange-700/80 dark:text-orange-300/80 font-medium">
+              سەرجەم بەشەکانى ناو دیوانى بەرێوەبەرایەتى گشتى
             </p>
           )}
         </div>
