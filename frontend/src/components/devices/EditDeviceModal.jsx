@@ -232,12 +232,10 @@ const EditDeviceModal = ({ isOpen, onClose, onUpdated, device }) => {
                         </div>
                         <div>
                           <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">نەوە (Gen)</label>
-                          <input 
-                            type="text"
+                          <CustomSpecDropdown 
+                            type="generation"
                             value={formData.generation}
-                            onChange={(e) => handleChange('generation', e.target.value)}
-                            placeholder="نموونە: 12th"
-                            className="w-full bg-slate-50 dark:bg-slate-900 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-bold text-sm"
+                            onChange={(val) => handleChange('generation', val)}
                           />
                         </div>
                       </div>
@@ -251,6 +249,7 @@ const EditDeviceModal = ({ isOpen, onClose, onUpdated, device }) => {
                             onChange={(val) => handleChange('gpu', val)}
                           />
                         </div>
+                      </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>

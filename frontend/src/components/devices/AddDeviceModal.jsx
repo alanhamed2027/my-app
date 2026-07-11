@@ -440,12 +440,11 @@ const AddDeviceModal = ({ isOpen, onClose, onAdded, initialDepartment, initialRo
                                 </td>
                                 <td className="py-2 px-3">
                                   {showSpecs ? (
-                                    <input 
-                                      type="text"
-                                      value={row.generation || ''}
-                                      onChange={(e) => handleRowChange(row.id, 'generation', e.target.value)}
-                                      className={baseInputClass}
-                                      placeholder="نموونە: 12th"
+                                    <CustomSpecDropdown 
+                                      type="generation"
+                                      value={row.generation}
+                                      onChange={(val) => handleRowChange(row.id, 'generation', val)}
+                                      placeholder="هەڵبژێرە..."
                                     />
                                   ) : (
                                     <div className="text-center text-slate-300 dark:text-slate-600">-</div>

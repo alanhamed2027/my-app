@@ -7,7 +7,8 @@ const defaultOptions = {
   hdd: ['256GB SSD', '512GB SSD', '1TB SSD', '1TB HDD', '2TB HDD'],
   cpu: ['Core i3', 'Core i5', 'Core i7', 'Core i9', 'Ryzen 5', 'Ryzen 7'],
   gpu: ['Intel Integrated', 'AMD Radeon', 'NVIDIA GTX 1650', 'NVIDIA RTX 3060', 'NVIDIA RTX 4060'],
-  brand: ['Dell', 'HP', 'Lenovo', 'Apple', 'Asus', 'Acer', 'Canon', 'Epson', 'Kyocera', 'Sony', 'Samsung', 'LG']
+  brand: ['Dell', 'HP', 'Lenovo', 'Apple', 'Asus', 'Acer', 'Canon', 'Epson', 'Kyocera', 'Sony', 'Samsung', 'LG'],
+  generation: ['8th', '9th', '10th', '11th', '12th', '13th', '14th']
 };
 
 const CustomSpecDropdown = ({ type, value, onChange, placeholder }) => {
