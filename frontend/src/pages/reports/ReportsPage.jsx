@@ -286,6 +286,7 @@ const ReportsPage = () => {
                         <th className="py-4 px-6">جۆر</th>
                         <th className="py-4 px-6">براند</th>
                         <th className="py-4 px-6">پرۆسێسەر</th>
+                        <th className="py-4 px-6">نەوە (Gen)</th>
                         <th className="py-4 px-6">هارد</th>
                         <th className="py-4 px-6">{systemType === 'EXTERNAL' ? 'ناوی شارەوانی' : 'بەش'}</th>
                         <th className="py-4 px-6">ژوور</th>
@@ -298,6 +299,7 @@ const ReportsPage = () => {
                           <td className="py-3 px-6">{device.category?.name || '-'}</td>
                           <td className="py-3 px-6">{device.brand || '-'}</td>
                           <td className="py-3 px-6" dir="ltr">{device.cpu || '-'}</td>
+                          <td className="py-3 px-6" dir="ltr">{device.generation || '-'}</td>
                           <td className="py-3 px-6" dir="ltr">{device.hdd || device.ssd || '-'}</td>
                           <td className="py-3 px-6">{device.department?.name || '-'}</td>
                           <td className="py-3 px-6">{device.room?.name || '-'}</td>

@@ -21,7 +21,7 @@ const AddDeviceModal = ({ isOpen, onClose, onAdded, initialDepartment, initialRo
 
   // Batch Form Rows
   const [deviceRows, setDeviceRows] = useState([
-    { id: Date.now(), assetNumber: '', serialNumber: '', categoryId: '', brand: '', model: '', ram: '', hdd: '', cpu: '', gpu: '' }
+    { id: Date.now(), assetNumber: '', serialNumber: '', categoryId: '', brand: '', model: '', ram: '', hdd: '', cpu: '', generation: '', gpu: '' }
   ]);
 
   useEffect(() => {
@@ -37,7 +37,7 @@ const AddDeviceModal = ({ isOpen, onClose, onAdded, initialDepartment, initialRo
         setSelectedRoom(null);
       }
       
-      let defaultRow = { id: Date.now(), assetNumber: '', serialNumber: '', categoryId: '', brand: '', model: '', ram: '', hdd: '', cpu: '', gpu: '', ups: '' };
+      let defaultRow = { id: Date.now(), assetNumber: '', serialNumber: '', categoryId: '', brand: '', model: '', ram: '', hdd: '', cpu: '', generation: '', gpu: '', ups: '' };
       setDeviceRows([defaultRow]);
       setError(null);
 
@@ -87,6 +87,7 @@ const AddDeviceModal = ({ isOpen, onClose, onAdded, initialDepartment, initialRo
       ram: lastRow?.ram || '', 
       hdd: lastRow?.hdd || '', 
       cpu: lastRow?.cpu || '', 
+      generation: lastRow?.generation || '',
       gpu: lastRow?.gpu || '',
       ups: lastRow?.ups || ''
     }]);
@@ -142,6 +143,7 @@ const AddDeviceModal = ({ isOpen, onClose, onAdded, initialDepartment, initialRo
           payload.ram = row.ram;
           payload.hdd = row.hdd;
           payload.cpu = row.cpu;
+          payload.generation = row.generation;
           payload.gpu = row.gpu;
           payload.ups = row.ups;
         }
@@ -345,6 +347,7 @@ const AddDeviceModal = ({ isOpen, onClose, onAdded, initialDepartment, initialRo
                           <th className="py-3 px-3 w-32 text-center">ڕام</th>
                           <th className="py-3 px-3 w-32 text-center">هارد</th>
                           <th className="py-3 px-3 w-32 text-center">پرۆسێسەر</th>
+                          <th className="py-3 px-3 w-24 text-center">نەوە (Gen)</th>
                           <th className="py-3 px-3 w-32 text-center">گرافیک</th>
                           <th className="py-3 px-3 w-32 text-center">UPS</th>
                           <th className="py-3 px-3 w-12 text-center">سڕینەوە</th>
@@ -430,6 +433,19 @@ const AddDeviceModal = ({ isOpen, onClose, onAdded, initialDepartment, initialRo
                                       value={row.cpu}
                                       onChange={(val) => handleRowChange(row.id, 'cpu', val)}
                                       placeholder="هەڵبژێرە..."
+                                    />
+                                  ) : (
+                                    <div className="text-center text-slate-300 dark:text-slate-600">-</div>
+                                  )}
+                                </td>
+                                <td className="py-2 px-3">
+                                  {showSpecs ? (
+                                    <input 
+                                      type="text"
+                                      value={row.generation || ''}
+                                      onChange={(e) => handleRowChange(row.id, 'generation', e.target.value)}
+                                      className={baseInputClass}
+                                      placeholder="نموونە: 12th"
                                     />
                                   ) : (
                                     <div className="text-center text-slate-300 dark:text-slate-600">-</div>

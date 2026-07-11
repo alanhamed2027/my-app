@@ -107,6 +107,12 @@ const PrintDeviceModal = ({ isOpen, onClose, device }) => {
                         </p>
                       </div>
                       <div className="bg-slate-50 dark:bg-slate-900/50 print:bg-transparent print:border-b print:border-slate-200 dark:border-slate-700 p-3 rounded-xl">
+                        <p className="text-xs font-bold text-slate-400 print:text-slate-500 dark:text-slate-400 mb-1">نەوە (Gen)</p>
+                        <p className="font-bold text-slate-800 dark:text-slate-100 print:text-black" dir="ltr">
+                          {device.generation || '-'}
+                        </p>
+                      </div>
+                      <div className="bg-slate-50 dark:bg-slate-900/50 print:bg-transparent print:border-b print:border-slate-200 dark:border-slate-700 p-3 rounded-xl">
                         <p className="text-xs font-bold text-slate-400 print:text-slate-500 dark:text-slate-400 mb-1">ڕام (RAM)</p>
                         <p className="font-bold text-slate-800 dark:text-slate-100 print:text-black" dir="ltr">
                           {device.ram || '-'}

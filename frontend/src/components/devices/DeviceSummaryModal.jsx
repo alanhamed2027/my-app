@@ -80,6 +80,7 @@ const DeviceSummaryModal = ({ isOpen, onClose, title, devices, department, room,
                       <th className="px-4 py-3 font-bold text-slate-600 dark:text-slate-300">جۆر</th>
                       <th className="px-4 py-3 font-bold text-slate-600 dark:text-slate-300">براند</th>
                       <th className="px-4 py-3 font-bold text-slate-600 dark:text-slate-300">پرۆسێسەر</th>
+                      <th className="px-4 py-3 font-bold text-slate-600 dark:text-slate-300">نەوە (Gen)</th>
                       <th className="px-4 py-3 font-bold text-slate-600 dark:text-slate-300">هارد</th>
                     </tr>
                   </thead>
@@ -105,6 +106,7 @@ const DeviceSummaryModal = ({ isOpen, onClose, title, devices, department, room,
                           </td>
                           <td className="px-4 py-3 text-slate-900 dark:text-slate-200 font-medium" dir="ltr">{device.brand || '-'}</td>
                           <td className="px-4 py-3 text-slate-600 dark:text-slate-400" dir="ltr">{device.cpu || '-'}</td>
+                          <td className="px-4 py-3 text-slate-600 dark:text-slate-400" dir="ltr">{device.generation || '-'}</td>
                           <td className="px-4 py-3 text-slate-600 dark:text-slate-400" dir="ltr">{device.hdd || device.ssd || '-'}</td>
                         </tr>
                       ))

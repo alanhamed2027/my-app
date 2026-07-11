@@ -927,6 +927,9 @@ const DevicesPage = () => {
                     <th className="px-4 py-4 font-bold text-slate-100 cursor-pointer hover:bg-slate-600 dark:hover:bg-slate-700 transition-colors" onClick={() => handleSort('cpu')}>
                       <div className="flex items-center justify-center gap-1">پرۆسێسەر {renderSortIcon('cpu')}</div>
                     </th>
+                    <th className="px-4 py-4 font-bold text-slate-100 cursor-pointer hover:bg-slate-600 dark:hover:bg-slate-700 transition-colors" onClick={() => handleSort('generation')}>
+                      <div className="flex items-center justify-center gap-1">نەوە {renderSortIcon('generation')}</div>
+                    </th>
                     <th className="px-4 py-4 font-bold text-slate-100 cursor-pointer hover:bg-slate-600 dark:hover:bg-slate-700 transition-colors" onClick={() => handleSort('gpu')}>
                       <div className="flex items-center justify-center gap-1">گرافیک {renderSortIcon('gpu')}</div>
                     </th>
@@ -976,6 +979,7 @@ const DevicesPage = () => {
                         <td className="px-4 py-4 font-bold text-slate-500 dark:text-slate-400" dir="ltr">{device.ram || '-'}</td>
                         <td className="px-4 py-4 font-bold text-slate-500 dark:text-slate-400" dir="ltr">{device.hdd || device.ssd || '-'}</td>
                         <td className="px-4 py-4 font-bold text-slate-500 dark:text-slate-400" dir="ltr">{device.cpu || '-'}</td>
+                        <td className="px-4 py-4 font-bold text-slate-500 dark:text-slate-400" dir="ltr">{device.generation || '-'}</td>
                         <td className="px-4 py-4 font-bold text-slate-500 dark:text-slate-400" dir="ltr">{device.gpu || '-'}</td>
                         <td className="px-4 py-4">
                           {device.ups ? (
