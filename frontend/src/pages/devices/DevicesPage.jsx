@@ -1029,9 +1029,7 @@ const DevicesPage = () => {
                                 </span>
                               )}
                             </div>
-                            <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-500 dark:text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg" onClick={() => handlePrint(device)}>
-                              <Printer size={16} />
-                            </Button>
+
                             {(['ADMIN', 'IT_STAFF'].includes(user?.role?.toUpperCase())) && (
                               <>
                                 <Button variant="ghost" size="icon" title="گواستنەوە" className="h-8 w-8 text-slate-500 dark:text-slate-400 hover:text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-900/30 rounded-lg" onClick={() => setDeviceToTransfer(device)}>
