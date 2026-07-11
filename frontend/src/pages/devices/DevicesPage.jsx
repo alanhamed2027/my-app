@@ -81,7 +81,7 @@ const DevicesPage = () => {
   // Inline Add State
   const [categories, setCategories] = useState([]);
   const [inlineLoading, setInlineLoading] = useState(false);
-  const [inlineForm, setInlineForm] = useState({ categoryId: '', brand: '', model: '', serialNumber: '', ram: '', hdd: '', cpu: '', gpu: '', ups: '', status: 'ACTIVE' });
+  const [inlineForm, setInlineForm] = useState({ categoryId: '', brand: '', model: '', serialNumber: '', ram: '', hdd: '', cpu: '', gpu: '', generation: '', ups: '', status: 'ACTIVE' });
   
   // Sorting State
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
@@ -322,7 +322,7 @@ const DevicesPage = () => {
         roomId: selectedRoom?.id
       };
       if (!isComputer(inlineForm.categoryId)) {
-        delete payload.ram; delete payload.hdd; delete payload.cpu; delete payload.gpu; delete payload.ups;
+        delete payload.ram; delete payload.hdd; delete payload.cpu; delete payload.gpu; delete payload.ups; delete payload.generation;
       }
       const res = await axios.post('/devices', payload);
       if (res.data.success) {
@@ -1183,6 +1183,16 @@ const DevicesPage = () => {
                             value={inlineForm.cpu}
                             onChange={(val) => setInlineForm({...inlineForm, cpu: val})}
                             placeholder="CPU"
+                          />
+                        ) : <div className="text-center text-slate-300 dark:text-slate-600 font-bold">-</div>}
+                      </td>
+                      <td className="px-2 py-3" dir="ltr">
+                        {isComputer(inlineForm.categoryId) ? (
+                          <CustomSpecDropdown 
+                            type="generation"
+                            value={inlineForm.generation}
+                            onChange={(val) => setInlineForm({...inlineForm, generation: val})}
+                            placeholder="Gen"
                           />
                         ) : <div className="text-center text-slate-300 dark:text-slate-600 font-bold">-</div>}
                       </td>
