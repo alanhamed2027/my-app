@@ -31,6 +31,7 @@ api.interceptors.response.use(
       // If token is invalid/expired, automatically logout
       localStorage.removeItem('token');
       localStorage.removeItem('user');
+      localStorage.removeItem('fakeUser');
       window.location.href = '/login'; 
     }
     return Promise.reject(error);
